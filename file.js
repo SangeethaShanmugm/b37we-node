@@ -72,12 +72,30 @@ const quote2 =  "Live more, wory Less ";
 // Task - Delete all files in Backup folder
 
 
-fs.readdir("./Backup", (err, data) => {
-    // console.log(data)
-    data.forEach(fileName => {
-        fs.unlink(`./Backup/${fileName}`, (err) => {
-       console.log("Deleted Successfully!!!!", fileName)
-     }) 
-     })
-})
+// fs.readdir("./Backup", (err, data) => {
+//     // console.log(data)
+//     data.forEach(fileName => {
+//         fs.unlink(`./Backup/${fileName}`, (err) => {
+//        console.log("Deleted Successfully!!!!", fileName)
+//      }) 
+//      })
+// })
 
+
+//writeFile -> callStack -> webApis(whoever finishes writing first ) -> callBack Q -> call Stack
+
+//writeFile, readFile, appendFile - async
+//writeFileSync, readFileSync, appendFileSync - sync
+
+
+const [, , noOfFiles] = process.argv;
+console.log(noOfFiles);
+const quote3 = " Happy day ";
+for (let i = 1; i <= noOfFiles; i++ ) {
+    fs.writeFile(`./Backup/text-${i}.html`, quote3, (err) => {
+        console.log(`Completed writing text-${i}.html`);
+    })
+}
+
+//npm init - package.json file
+//npm i express 
