@@ -1,4 +1,9 @@
-const express = require('express'); // 3rd party package 
+// const express = require('express'); // 3rd party package 
+// const { MongoClient } = require("mongodb")
+
+import express from "express";
+import  { MongoClient } from "mongodb";
+
 
 const app = express();
 const PORT = 9000;
@@ -69,22 +74,46 @@ const movies = [
     "language": "english"
     }
     ]
-   
+  
+const MONGO_URL ="mongodb://localhost"
+
+async function createConnection() {
+    const client = new MongoClient(MONGO_URL)
+    await client.connect();
+    return client;
+  }
+
+const client =  await createConnection();
+
+
+// Rest Api endpoints
+
 app.get("/", (request, response) =>  {
     response.send("Hello Everyone")
 });
 
+
 // Task 
-// /movies - all the movies
-// /movies?language=english - only english movies
-//  /movies?language=english&rating=8  -filter by language & rating
-// /movies?rating=8 - only rating with 8 movies need to display 
+//1. /movies - all the movies - done
+// 2. /movies?language=english - only english movies - done 
+// 3.  /movies?language=english&rating=8  -filter by language & rating - done
+// 4. /movies?rating=8 - only rating with 8 movies need to display  - done 
 
 
 app.get("/movies", (request, response) =>  {
-   const  { language } =  request.query;
+   const  { language, rating } =  request.query;
    console.log( request.query, language);
-    response.send(movies.filter((mv) => mv.language == language));
+   let filteredMovies = movies;
+
+   if(language) {
+    filteredMovies = filteredMovies.filter((mv) => mv.language === language);
+   }
+
+   if(rating) {
+    filteredMovies = filteredMovies.filter((mv) => mv.rating === +rating);
+   }
+
+    response.send(filteredMovies);
 });
 
 //get id  - /movies/id - /movies/100
