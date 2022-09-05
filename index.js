@@ -80,6 +80,7 @@ const MONGO_URL ="mongodb://localhost"
 async function createConnection() {
     const client = new MongoClient(MONGO_URL)
     await client.connect();
+    console.log("Mongo is connected");
     return client;
   }
 
@@ -95,45 +96,64 @@ app.get("/", (request, response) =>  {
 
 // Task 
 //1. /movies - all the movies - done
-// 2. /movies?language=english - only english movies - done 
-// 3.  /movies?language=english&rating=8  -filter by language & rating - done
-// 4. /movies?rating=8 - only rating with 8 movies need to display  - done 
+// 2. /movies?language=english - only english movies -  
+// 3.  /movies?language=english&rating=8  -filter by language & rating - 
+// 4. /movies?rating=8 - only rating with 8 movies need to display  -
+// TAsk - Get all movie - must come from mongodb 
 
+app.get("/movies", async (request, response) =>  {
+//    const  { language, rating } =  request.query;
+//    console.log( request.query, language);
+//    let filteredMovies = movies;
 
-app.get("/movies", (request, response) =>  {
-   const  { language, rating } =  request.query;
-   console.log( request.query, language);
-   let filteredMovies = movies;
+//    if(language) {
+//     filteredMovies = filteredMovies.filter((mv) => mv.language === language);
+//    }
 
-   if(language) {
-    filteredMovies = filteredMovies.filter((mv) => mv.language === language);
-   }
-
-   if(rating) {
-    filteredMovies = filteredMovies.filter((mv) => mv.rating === +rating);
-   }
-
-    response.send(filteredMovies);
+//    if(rating) {
+//     filteredMovies = filteredMovies.filter((mv) => mv.rating === +rating);
+//    }
+    if(request.query.rating){
+        request.query.rating = +request.query.rating;
+    }
+   
+    console.log(request.query)
+    const movie = await client.db("b37wd").collection("movies").find( request.query).toArray();
+    response.send(movie);
 });
 
 //get id  - /movies/id - /movies/100
-
+   
 //Task - to send only movie with the matched id 
-app.get("/movies/:id", (request, response) =>  {    
+app.get("/movies/:id", async (request, response) =>  {    
     const { id } = request.params;
     console.log(id)
-    const movie = movies.find((mv) => mv.id == id);
-    response.send(movie)
+    //db.movies.findOne({id: "102"})
+    const movie = await client
+    .db("b37wd")
+    .collection("movies")
+    .findOne({ id: id })
+    
+    console.log(movie)
+    movie 
+    ? response.send(movie) 
+    : response.status(404).send({ message: "No movie found" });
 });
 
 
-//expected o/p
-// {"id":"100",
-// "name":"RRR",
-// "poster":"https://englishtribuneimages.blob.core.windows.net/gallary-content/2021/6/Desk/2021_6$largeimg_977224513.JPG",
-// "rating":8.8,
-// "summary":"RRR is an upcoming Indian Telugu-language period action drama film directed by S. S. Rajamouli, and produced by D. V. V. Danayya of DVV Entertainments.",
-// "trailer":"https://www.youtube.com/embed/f_vbAtFSEc0"}
+//Delete a movie id
+
+app.delete("/movies/:id", async (request, response) =>  {    
+    const { id } = request.params;
+    console.log(id)
+    //db.movies.deleteOne({id: "102"})
+    const movie = await client
+    .db("b37wd")
+    .collection("movies")
+    .deleteOne({ id: id })
+    response.send(movie)
+});
+
 
 
 //create a server
