@@ -96,9 +96,9 @@ app.get("/", (request, response) =>  {
 
 // Task 
 //1. /movies - all the movies - done
-// 2. /movies?language=english - only english movies -  
-// 3.  /movies?language=english&rating=8  -filter by language & rating - 
-// 4. /movies?rating=8 - only rating with 8 movies need to display  -
+// 2. /movies?language=english - only english movies -  done
+// 3.  /movies?language=english&rating=8  -filter by language & rating - done
+// 4. /movies?rating=8 - only rating with 8 movies need to display  -done
 // TAsk - Get all movie - must come from mongodb 
 
 app.get("/movies", async (request, response) =>  {
