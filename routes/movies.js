@@ -1,7 +1,10 @@
 import express from "express";
 import { getAllMovies,getMovieById, deleteMovieById, addMovies, updateMovieById } from "../helper.js"
+import { auth } from "../middleware/auth.js"
 
 const router = express.Router();
+
+//get all movies
 router.get("/", async (request, response) =>  {
 
     if(request.query.rating){
@@ -31,7 +34,7 @@ router.get("/:id", async (request, response) =>  {
     const { id } = request.params;
     console.log(id)
     //db.movies.findOne({id: "102"})
-    const movie = await getMovieById(+id)
+    const movie = await getMovieById(id)
     
     console.log(movie)
     movie 
